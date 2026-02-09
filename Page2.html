@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Page2</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    user-select:none;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    height:100vh;
+    background:#f6d6d6;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+/* =======================
+   BACKGROUND IMAGE
+   ======================= */
+
+.bg{
+    position:fixed;
+    inset:0;
+
+    background-image:url("us.jpeg"); /* your image */
+    background-size:cover;
+    background-position:center;
+
+    opacity:0;
+    transition:opacity 2s ease;
+
+    z-index:0;
+}
+
+/* lighter overlay → image more visible */
+.bg::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(246,214,214,0.45); /* WAS 0.85 */
+}
+
+/* =======================
+   SHARED FADE
+   ======================= */
+
+.fade{
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity 1.2s ease, transform 1.2s ease;
+    position:relative;
+    z-index:2;
+}
+
+.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* =======================
+   FIRST TEXTS
+   ======================= */
+
+#msg1, #msg2{
+    position:absolute;
+    text-align:center;
+    font-size:2.6rem;
+    color:#7a2e2e;
+}
+
+/* =======================
+   HEART
+   ======================= */
+
+.heart{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:150px;
+    height:140px;
+    transform:translate(-50%,-50%) scale(0);
+    z-index:2;
+}
+
+.heart path{
+    fill:none;
+    stroke:#c62828;
+    stroke-width:10;
+}
+
+.heart.animate{
+    animation:zoom 3s ease-out;
+}
+
+@keyframes zoom{
+    from{ transform:translate(-50%,-50%) scale(0); }
+    to{   transform:translate(-50%,-50%) scale(18); }
+}
+
+/* =======================
+   FINAL SECTION
+   ======================= */
+
+#finalSection{
+    width:80%;
+    text-align:center;
+
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+
+    opacity:0;
+    position:relative;
+    z-index:2;
+}
+
+.promise{
+    font-family:'Pacifico', cursive;
+    font-size:1.35rem;
+    line-height:1.7;
+    color:#7a2e2e;
+}
+
+.next-btn{
+    align-self:center;
+    padding:12px 32px;
+    border:none;
+    border-radius:30px;
+    background:#7a2e2e;
+    color:white;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg" id="bg"></div>
+
+<div id="msg1" class="fade">
+    We will celebrate your birthday everytime<br>
+    and if you want everyday will be your birthday.
+</div>
+
+<div id="msg2" class="fade">
+    I LOVE YOU SO MUCHH BACHAAAAA 😚
+</div>
+
+<div id="finalSection">
+    <div class="promise">
+        Me Apse hamesha pyaar krtaa rhunga hamesha aapke sath rhunga aur aapko koi bhii problems
+        akele face nahii krnii padengi ham hamesha sath rhengee aurr kabhii mujhsee koii shikayat
+        hoo toh mujhe bataa denaa taaki me khud ko sudhaar saku aurr chahe kuchh bhii hojayy
+        kitnii hi gandi fight hojay par ham ek dusre ko hamesha maaf krr dengee. Aap 100 bar
+        ruthoge toh me 200 baar manaunga aap 500 baar ruthoge toh mee 1000 baar managungaa
+        par kabhii chodd ke nahii jaungaa. Har chiz Tere liye karunga jo tujhee achaa lagtaa hh
+        jo tujhe try krnii h chahee kitnii bhii mehnat krnii pdee.
+    </div>
+
+    <button id="nextBtn" class="next-btn">NEXT 👉</button>
+</div>
+
+<div class="heart" id="heart">
+<svg viewBox="0 0 100 90">
+<path d="M50 82 L18 50 A18 18 0 1 1 50 28 A18 18 0 1 1 82 50 Z"/>
+</svg>
+</div>
+
+<script>
+const msg1=document.getElementById("msg1");
+const msg2=document.getElementById("msg2");
+const heart=document.getElementById("heart");
+const finalSection=document.getElementById("finalSection");
+const nextBtn=document.getElementById("nextBtn");
+const bg=document.getElementById("bg");
+
+/* ---------- FIRST TEXT (5s only) ---------- */
+
+msg1.classList.add("show");
+
+setTimeout(()=>{
+    msg1.classList.remove("show");
+
+    /* show second */
+    setTimeout(()=>{
+        msg2.classList.add("show");
+
+        /* heart */
+        setTimeout(()=>{
+            heart.classList.add("animate");
+
+            setTimeout(()=>{
+                heart.remove();
+                msg2.remove();
+
+                bg.style.opacity="1";   /* image fade */
+                finalSection.style.opacity="1";
+
+            },3000);
+
+        },1000);
+
+    },1200);
+
+},5000);   /* ← changed from 10000 → 5000 */
+
+
+/* navigation */
+nextBtn.addEventListener("click",()=>{
+    nextBtn.remove();
+    window.location.replace("Page3.html");
+});
+</script>
+
+</body>
+</html>

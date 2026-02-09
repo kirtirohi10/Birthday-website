@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Front</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+    user-select:none;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#f6d6d6;
+    overflow:hidden;
+}
+
+/* ================= TEXT ================= */
+
+.scene{
+    text-align:center;
+    z-index:5;
+}
+
+h1{
+    font-size:4rem;
+    color:#7a2e2e;
+}
+
+h2{
+    font-size:2.2rem;
+    color:#8b3a3a;
+    opacity:0;
+    animation:fadeIn 1s forwards;
+    animation-delay:3s;
+}
+
+span{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(60px);
+    animation:rise .6s forwards;
+}
+
+@keyframes rise{ to{opacity:1; transform:translateY(0);} }
+@keyframes fadeIn{ to{opacity:1;} }
+
+/* ================= CANVAS ================= */
+
+canvas{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+}
+
+/* ================= BALLOON STYLE ================= */
+
+.balloon{
+    position:fixed;
+    width:36px;
+    height:46px;
+    border-radius:50% 50% 45% 45%;
+    background:#c62828;
+    cursor:pointer;
+    z-index:2;
+}
+
+.balloon::after{
+    content:"";
+    position:absolute;
+    width:2px;
+    height:28px;
+    background:#7a2e2e;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:-28px;
+}
+
+/* ================= BUTTON ================= */
+
+#escapeBtn{
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    padding:14px 28px;
+    border:none;
+    border-radius:30px;
+    background:#7a2e2e;
+    color:white;
+    display:none;
+    cursor:pointer;
+    z-index:10;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fx"></canvas>
+
+<div class="scene" id="scene">
+    <h1 id="line1"></h1>
+    <h2>Happyy Birthday Janaaa 😚🤗☺️</h2>
+</div>
+
+<button id="escapeBtn">Click me 🙂</button>
+
+<script>
+/* ================= TYPE TEXT ================= */
+
+const msg="Hieee Babyyy.";
+const line=document.getElementById("line1");
+
+[...msg].forEach((c,i)=>{
+    const s=document.createElement("span");
+    s.textContent=c;
+    s.style.animationDelay=(i*(3000/msg.length))+"ms";
+    line.appendChild(s);
+});
+
+/* ================= FIREWORKS + CONFETTI ================= */
+
+const canvas=document.getElementById("fx");
+const ctx=canvas.getContext("2d");
+
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let particles=[];
+
+function firework(x,y){
+    for(let i=0;i<60;i++){
+        particles.push({x,y,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,life:70});
+    }
+}
+
+function popper(x,dir){
+    for(let i=0;i<80;i++){
+        particles.push({x,y:canvas.height,vx:(Math.random()*3*dir),vy:-(Math.random()*7+4),life:90});
+    }
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach(p=>{
+        ctx.fillStyle="#c62828";
+        ctx.fillRect(p.x,p.y,3,3);
+        p.x+=p.vx;
+        p.y+=p.vy;
+        p.vy+=0.05;
+        p.life--;
+    });
+
+    particles=particles.filter(p=>p.life>0);
+    requestAnimationFrame(draw);
+}
+draw();
+
+/* ================= BALLOONS (SYNCED + VISIBLE + SLOW + POP) ================= */
+
+let balloons=[];
+let balloonInterval=null;
+
+function createBalloon(){
+
+    const el=document.createElement("div");
+    el.className="balloon";
+    document.body.appendChild(el);
+
+    const balloon={
+        el,
+        x: Math.random()*window.innerWidth,
+        y: Math.random()*window.innerHeight,   // spawn inside screen
+        vy: 0.4 + Math.random()*0.4,           // slow upward
+        vx: (Math.random()-0.5)*0.4,           // slight drift
+        size: 0.8 + Math.random()*0.6
+    };
+
+    el.style.transform=`translate(${balloon.x}px,${balloon.y}px) scale(${balloon.size})`;
+
+    el.onclick=()=>{
+        el.remove();
+        balloons=balloons.filter(b=>b!==balloon);
+    };
+
+    balloons.push(balloon);
+}
+
+function updateBalloons(){
+
+    balloons.forEach(b=>{
+        b.y -= b.vy;
+        b.x += b.vx;
+
+        b.el.style.transform =
+            `translate(${b.x}px,${b.y}px) scale(${b.size})`;
+    });
+
+    balloons=balloons.filter(b=>{
+        if(b.y < -120){
+            b.el.remove();
+            return false;
+        }
+        return true;
+    });
+
+    requestAnimationFrame(updateBalloons);
+}
+updateBalloons();
+
+/* ================= CELEBRATION ================= */
+
+function startCelebration(){
+
+    const fx=setInterval(()=>{
+        firework(Math.random()*canvas.width, Math.random()*canvas.height*0.6);
+        popper(20,1);
+        popper(canvas.width-20,-1);
+    },300);
+
+    balloonInterval=setInterval(createBalloon,350);
+
+    setTimeout(()=>{
+        clearInterval(fx);
+        clearInterval(balloonInterval);
+    },3500);
+}
+
+/* ================= TIMING ================= */
+
+const scene=document.getElementById("scene");
+const btn=document.getElementById("escapeBtn");
+
+setTimeout(()=>startCelebration(),5000);
+
+setTimeout(()=>{
+    scene.style.display="none";
+    btn.style.display="block";
+},8500);
+
+/* ================= BUTTON ================= */
+
+let clicks=0;
+
+function teleport(){
+    btn.style.left=Math.random()*(innerWidth-120)+"px";
+    btn.style.top=Math.random()*(innerHeight-60)+"px";
+    btn.style.transform="none";
+}
+
+btn.onclick=()=>{
+    clicks++;
+    if(clicks<10){
+        teleport();
+        return;
+    }
+    window.location.replace("Page2.html");
+};
+</script>
+
+</body>
+</html>

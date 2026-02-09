@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Page3</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    user-select:none;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    height:100vh;
+    background:#f6d6d6;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+/* ================= BACKGROUND LAYERS ================= */
+
+.bg{
+    position:fixed;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    opacity:0;
+    transition:opacity 1.8s ease;
+    z-index:0;
+}
+
+#bg2{ background-image:url("us2.jpeg"); }
+#bg3{ background-image:url("us3.jpeg"); }
+
+.bg::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(246,214,214,0.45);
+}
+
+/* ================= LAYOUT ================= */
+
+.wrapper{
+    width:80%;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:30px;
+    z-index:2;
+}
+
+/* ================= TEXT ================= */
+
+.text{
+    font-family:'Pacifico', cursive;
+    color:#7a2e2e;
+    line-height:1.8;
+    white-space:pre-wrap;
+}
+
+#msg1{ font-size:2.2rem; }
+
+#msg2, #msg3{
+    font-size:1.6rem;
+    display:none;
+}
+
+/* ================= BUTTON ================= */
+
+.next-btn{
+    margin-top:25px;
+    padding:12px 30px;
+    border:none;
+    border-radius:30px;
+    background:#7a2e2e;
+    color:white;
+    cursor:pointer;
+}
+
+/* ================= ANIMATIONS ================= */
+
+.fadeIn{
+    animation:fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+/* letter fade */
+
+.letter{
+    display:inline-block;
+    transition:opacity .35s ease, transform .35s ease;
+}
+
+.fadeOut{
+    opacity:0;
+    transform:translateY(-12px);
+}
+</style>
+</head>
+
+<body>
+
+<!-- BACKGROUNDS -->
+<div id="bg2" class="bg"></div>
+<div id="bg3" class="bg"></div>
+
+<div class="wrapper">
+
+    <!-- FIRST TEXT -->
+    <div id="msg1" class="text"></div>
+
+    <!-- SECOND TEXT -->
+    <div id="msg2" class="text">
+I am sorry for everything janaa that i must have done but i didnt. 
+Wishing you about the valentines week and not wishing you happy eve first but i am trying Babyyy to be the best version of me when i am with you. 
+I AM SORRY FOR EVERY MISTAKE I EVER MADE.
+
+I want you to please stay with me forever in everylife time. 
+Me tumse shadi krna chahtaa hu babyyy hamarii chotuu si family hogii cutuuu se aap cutuuuu se babiess hamaare.
+    </div>
+
+    <button id="nextBtn" class="next-btn" style="display:none;">NEXT 👉</button>
+
+    <!-- THIRD TEXT -->
+    <div id="msg3" class="text">
+Hamara pyar in choti ladaiyoo se bhtt bada hh kabhii bhii hamarii ladaii hoo na toh pura ladenge par ek dusre ke paas jarur lautke ayngee ye meraa promise hh Aur aapko bhii yehii promise krna pdega.
+
+Bhtt misunderstandings hongi hamare bich bhtt kuch hogaa par hamein in sabme sath rehna h ek dusre par 1000% trust krna h.
+
+Pehle bhii bht ladaiyaa huii h aur hamne sabko solve kara aage bhii krte rhenge.
+
+<br><br>
+
+<button id="finalBtn" class="next-btn">NEXT 👉</button>
+    </div>
+
+</div>
+
+<script>
+const msg1=document.getElementById("msg1");
+const msg2=document.getElementById("msg2");
+const msg3=document.getElementById("msg3");
+const nextBtn=document.getElementById("nextBtn");
+const finalBtn=document.getElementById("finalBtn");
+const bg2=document.getElementById("bg2");
+const bg3=document.getElementById("bg3");
+
+/* ================= FIRST TEXT BUILD ================= */
+
+const first="Forever with you. Every day. Every moment. No matter what happens.";
+
+[...first].forEach(c=>{
+    const s=document.createElement("span");
+    s.className="letter";
+    s.textContent=c===" " ? "\u00A0" : c;
+    msg1.appendChild(s);
+});
+
+const letters=document.querySelectorAll(".letter");
+
+/* ================= FLOW ================= */
+
+setTimeout(()=>{
+
+    letters.forEach((l,i)=>{
+        setTimeout(()=>l.classList.add("fadeOut"), i*35);
+    });
+
+    setTimeout(()=>{
+        msg1.style.display="none";
+
+        msg2.style.display="block";
+        msg2.classList.add("fadeIn");
+
+        bg2.style.opacity="1";
+
+        nextBtn.style.display="block";
+
+    }, letters.length*35 + 400);
+
+},4000);
+
+/* second → third */
+
+nextBtn.onclick=()=>{
+    nextBtn.style.display="none";
+    msg2.style.display="none";
+
+    bg2.style.opacity="0";
+    bg3.style.opacity="1";
+
+    msg3.style.display="block";
+    msg3.classList.add("fadeIn");
+};
+
+/* third → page4 */
+
+finalBtn.onclick=()=>{
+    window.location.replace("Page4.html");
+};
+</script>
+
+</body>
+</html>
